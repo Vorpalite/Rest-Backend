@@ -86,6 +86,17 @@ function findUserById(id) {
     //return users['users_list'].filter( (user) => user['id'] === id);
 }
 
+function generateId(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+    }
+    return result;
+}
+
 const findUserByName = (name) => { 
     return users['users_list'].filter( (user) => user['name'] === name); 
 }
@@ -101,6 +112,8 @@ app.post('/users', (req, res) => {
 });
 
 function addUser(user){
+    var userId = generateId(6);
+    user.id = userId;
     users['users_list'].push(user);
 }
 
