@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = 2000;
 const users = { 
@@ -31,6 +32,7 @@ const users = {
       }
    ]
 }
+app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -40,7 +42,6 @@ app.get('/', (req, res) => {
 app.get('/users', (req, res) => {
     const name = req.query.name;
     const job = req.query.job;
-    console.log('Name is %s and Id is %s.', name, job);
     if (name != undefined && job != undefined){
         let result = findUserByNameAndJob(name, job);
         result = {users_list: result};
@@ -84,6 +85,17 @@ function findUserById(id) {
     //return users['users_list'].filter( (user) => user['id'] === id);
 }
 
+function generateId(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+    }
+    return result;
+}
+
 const findUserByName = (name) => { 
     return users['users_list'].filter( (user) => user['name'] === name); 
 }
@@ -95,10 +107,13 @@ const findUserByNameAndJob = (name, job) => {
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
     addUser(userToAdd);
-    res.status(200).end();
+    res.send(userToAdd);
+    res.status(201).end();
 });
 
 function addUser(user){
+    var userId = generateId(6);
+    user.id = userId;
     users['users_list'].push(user);
 }
 
@@ -109,7 +124,7 @@ app.delete('/users/:id', (req, res) => {
        res.status(404).send('Resource not found.');
    else {
       deleteUser(result);
-      res.status(202).end();
+      res.status(204).end();
    }
 });
 
