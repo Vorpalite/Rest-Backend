@@ -42,7 +42,6 @@ app.get('/', (req, res) => {
 app.get('/users', (req, res) => {
     const name = req.query.name;
     const job = req.query.job;
-    console.log('Name is %s and Id is %s.', name, job);
     if (name != undefined && job != undefined){
         let result = findUserByNameAndJob(name, job);
         result = {users_list: result};
@@ -108,6 +107,7 @@ const findUserByNameAndJob = (name, job) => {
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
     addUser(userToAdd);
+    res.send(userToAdd);
     res.status(201).end();
 });
 
@@ -124,7 +124,7 @@ app.delete('/users/:id', (req, res) => {
        res.status(404).send('Resource not found.');
    else {
       deleteUser(result);
-      res.status(202).end();
+      res.status(204).end();
    }
 });
 
